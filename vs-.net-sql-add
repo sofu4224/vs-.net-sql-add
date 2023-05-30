@@ -1,0 +1,48 @@
+public IActionResult list()
+        {
+            var context = new DataContext();
+            var a = context.Class.ToList();
+            return View(a);
+        }
+        public IActionResult remove(int Id)
+        {
+            var ct = new DataContext();
+            var a = ct.Class.First(i => i.Id == Id);
+            ct.Remove(a);
+            ct.SaveChanges();
+            return RedirectToAction("list");
+        }
+
+        public IActionResult addupdate(int? Id)
+        {
+            if (Id != null)
+            {
+                DataContext dataContext = new DataContext();
+                var a = dataContext.Class.Where(i => i.Id == Id).FirstOrDefault();
+                return View(a);
+            }
+            Class clas = new Class();
+            return View(clas);
+        }
+        [HttpPost]
+        public IActionResult addupdate(Class entity)
+        {
+            if (ModelState.IsValid)
+            {
+                if (entity.Id == 0)
+                {
+                    DataContext dataContext = new DataContext();
+                    dataContext.Add(entity);
+                    dataContext.SaveChanges();
+                    ViewBag.sonuc = "Transaction Saved Successfully.";
+                }
+                else
+                {
+                    DataContext dataContext = new DataContext();
+                    dataContext.Update(entity);
+                    dataContext.SaveChanges();
+                    ViewBag.sonuc = "Transaction Updated Successfully.";
+                }
+            }
+            return View(entity);
+            }
